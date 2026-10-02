@@ -1,48 +1,6 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const menuButton = document.querySelector(".menu-btn");
-  const nav = document.querySelector("#nav");
-  const year = document.querySelector("#year");
-
-  if (year) year.textContent = new Date().getFullYear();
-
-  const closeMenu = () => {
-    if (!menuButton || !nav) return;
-    nav.classList.remove("open");
-    menuButton.setAttribute("aria-expanded", "false");
-    menuButton.setAttribute("aria-label", "Открыть меню");
-    menuButton.textContent = "☰";
-    document.body.classList.remove("menu-open");
-  };
-
-  if (menuButton && nav) {
-    menuButton.addEventListener("click", () => {
-      const isOpen = nav.classList.toggle("open");
-      menuButton.setAttribute("aria-expanded", String(isOpen));
-      menuButton.setAttribute("aria-label", isOpen ? "Закрыть меню" : "Открыть меню");
-      menuButton.textContent = isOpen ? "×" : "☰";
-      document.body.classList.toggle("menu-open", isOpen);
-    });
-
-    nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") closeMenu();
-    });
-
-    window.addEventListener("resize", () => {
-      if (window.innerWidth > 820) closeMenu();
-    });
-  }
-
-  document.querySelectorAll('a[href^="#"]').forEach((link) => {
-    link.addEventListener("click", (event) => {
-      const targetId = link.getAttribute("href");
-      if (!targetId || targetId === "#") return;
-      const target = document.querySelector(targetId);
-      if (!target) return;
-      event.preventDefault();
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-      history.replaceState(null, "", targetId);
-    });
-  });
+document.addEventListener("DOMContentLoaded",()=>{const body=document.body,m=document.querySelector(".menu-btn"),nav=document.querySelector("#main-nav"),year=document.querySelector("#year");if(year)year.textContent=new Date().getFullYear();const closeNav=()=>{if(!m||!nav)return;nav.classList.remove("open");m.textContent="☰";m.setAttribute("aria-expanded","false")};if(m&&nav){m.addEventListener("click",()=>{const open=nav.classList.toggle("open");m.textContent=open?"×":"☰";m.setAttribute("aria-expanded",String(open))});nav.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeNav));window.addEventListener("resize",()=>{if(innerWidth>980)closeNav()})}
+const reveal=document.querySelectorAll(".reveal");if("IntersectionObserver"in window){const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add("on");io.unobserve(e.target)}}),{threshold:.06});reveal.forEach(el=>io.observe(el))}else reveal.forEach(el=>el.classList.add("on"));
+const modal=document.querySelector("#booking-modal"),form=document.querySelector("#booking-form");const openModal=()=>{modal?.classList.add("open");modal?.setAttribute("aria-hidden","false");body.classList.add("modal-open");setTimeout(()=>modal?.querySelector("input")?.focus(),30)};const closeModal=()=>{modal?.classList.remove("open");modal?.setAttribute("aria-hidden","true");body.classList.remove("modal-open")};document.querySelectorAll(".js-book").forEach(b=>b.addEventListener("click",openModal));document.querySelectorAll("[data-close-modal]").forEach(b=>b.addEventListener("click",closeModal));form?.addEventListener("submit",e=>{e.preventDefault();const status=form.querySelector(".form-status");if(status)status.textContent="Готово — это демо-форма, данные не отправлялись.";form.reset()});
+const lightbox=document.querySelector("#lightbox"),lbImg=lightbox?.querySelector("img"),lbCap=lightbox?.querySelector("figcaption");const closeLb=()=>{lightbox?.classList.remove("open");lightbox?.setAttribute("aria-hidden","true");body.classList.remove("modal-open")};document.querySelectorAll(".gallery-card").forEach(card=>card.addEventListener("click",()=>{const img=card.querySelector("img");if(!img||!lightbox)return;if(lbImg){lbImg.src=img.src;lbImg.alt=img.alt}if(lbCap)lbCap.textContent=card.querySelector("span")?.textContent||"";lightbox.classList.add("open");lightbox.setAttribute("aria-hidden","false");body.classList.add("modal-open")}));document.querySelectorAll("[data-close-lightbox]").forEach(b=>b.addEventListener("click",closeLb));document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeNav();closeModal();closeLb()}});
+const sections=[...document.querySelectorAll("main section[id]")],links=[...document.querySelectorAll(".nav a")];if("IntersectionObserver"in window){const spy=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+e.target.id))}}),{rootMargin:"-35% 0px -55% 0px"});sections.forEach(s=>spy.observe(s))}
 });
